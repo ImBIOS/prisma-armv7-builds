@@ -1,0 +1,62 @@
+name: build armv7
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Commit on the given branch to build"
+        required: true
+
+jobs:
+  build:
+    name: "ARMv7 engines build on tag ${{ github.event.inputs.tag }}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ${{ github.event.inputs.tag }}
+        uses: actions/checkout@v2
+        with:
+          repository: 'prisma/prisma-engines'
+          ref: ${{ github.event.inputs.tag }}
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: armv7-unknown-linux-gnueabihf
+          override: true
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Setup cross with custom image
+        run: |-
+          cat <<EOF > Cross.toml
+            [target.armv7-unknown-linux-gnueabihf]
+            image = "pantharshit00/prisma-armv7-build-image:latest"
+          EOF
+      
+      - name: List files for verification
+        run: ls -al && cat Cross.toml
+          
+      - uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --target armv7-unknown-linux-gnueabihf --release
+      - name: Rename Node API file
+        run: |
+          mv ${{ github.workspace }}/target/armv7-unknown-linux-gnueabihf/release/libquery_engine.so ${{ github.workspace }}/target/armv7-unknown-linux-gnueabihf/release/libquery_engine_napi.so.node
+      - uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.event.inputs.tag }}
+          commit: master
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: "Automatic release via CI: ${{ github.event.inputs.tag }}"
+          artifacts: |
+            ${{ github.workspace }}/target/armv7-unknown-linux-gnueabihf/release/query-engine,
+            ${{ github.workspace }}/target/armv7-unknown-linux-gnueabihf/release/prisma-fmt,
+            ${{ github.workspace }}/target/armv7-unknown-linux-gnueabihf/release/migration-engine,
+            ${{ github.workspace }}/target/armv7-unknown-linux-gnueabihf/release/introspection-engine,
+            ${{ github.workspace }}/target/armv7-unknown-linux-gnueabihf/release/libquery_engine_napi.so.node
