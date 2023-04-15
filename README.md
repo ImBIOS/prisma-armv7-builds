@@ -2,6 +2,17 @@
 
 This repository contains precompiled [prisma-engines](https://github.com/prisma/prisma-engines) for armv7.
 
+## Local Development
+
+### Docker
+
+You can use the provided Dockerfile to build an image to build the engines in the GitHub Actions CI environment.
+
+```sh
+docker build . -t prisma-armv7-build-image --platform linux/amd64
+docker run -it prisma-armv7-build-image
+```
+
 ## How to use this repository
 
 This mostly follows this documentation piece, please read this once: <https://www.prisma.io/docs/concepts/components/prisma-engines#using-custom-engine-binaries>
