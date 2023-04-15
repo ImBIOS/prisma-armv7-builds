@@ -14,16 +14,17 @@ RUN cd $OPENSSL_VERSION && ./Configure linux-armv4 --cross-compile-prefix=/usr/b
 # This env var configures rust-openssl to use the cross compiled version
 ENV OPENSSL_DIR=/opt/openssl-arm
 
-ENV ZLIB_VERSION=1.2.11
-RUN echo "Building zlib" && \
-    cd /tmp && \
-    curl -fLO "http://zlib.net/zlib-$ZLIB_VERSION.tar.gz" && \
-    tar xzf "zlib-$ZLIB_VERSION.tar.gz" && cd "zlib-$ZLIB_VERSION" && \
-    CHOST=arm CC=/usr/bin/arm-linux-gnueabihf-gcc \
-    AR=/usr/bin/arm-linux-gnueabihf-ar RANLIB=/usr/bin/arm-linux-gnueabihf-ranlib \
-    ./configure --static --prefix=/opt/zlib && \
-    make && make install && \
-    rm -r /tmp/*
+RUN ZLIB_VERSION=$(curl -sSL https://zlib.net/ | grep -o 'zlib-[0-9]*\.[0-9]*\.[0-9]*' | head -n 1 | cut -d '-' -f 2) && \
+  echo "Latest zlib version is ${ZLIB_VERSION}" && \
+  echo "Building zlib" && \
+  cd /tmp && \
+  curl -fLO "http://zlib.net/zlib-$ZLIB_VERSION.tar.gz" && \
+  tar xzf "zlib-$ZLIB_VERSION.tar.gz" && cd "zlib-$ZLIB_VERSION" && \
+  CHOST=arm CC=/usr/bin/arm-linux-gnueabihf-gcc \
+  AR=/usr/bin/arm-linux-gnueabihf-ar RANLIB=/usr/bin/arm-linux-gnueabihf-ranlib \
+  ./configure --static --prefix=/opt/zlib && \
+  make && make install && \
+  rm -r /tmp/*
 
 # Install Rust
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
@@ -35,5 +36,5 @@ ENV CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_RUNNER="/linux-runner armv7"
 ENV CC_armv7_unknown_linux_gnueabihf=arm-linux-gnueabihf-gcc
 ENV CXX_armv7_unknown_linux_gnueabihf=arm-linux-gnueabihf-g++
 ENV QEMU_LD_PREFIX=/usr/arm-linux-gnueabihf
-ENV LIBZ_SYS_STATIC=1 
+ENV LIBZ_SYS_STATIC=1
 
