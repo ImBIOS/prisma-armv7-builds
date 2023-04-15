@@ -48,7 +48,7 @@ jobs:
         with:
           use-cross: true
           command: build
-          args: --target armv7-unknown-linux-gnueabihf --release -p query-engine -p query-engine-node-api -p schema-engine-cli -p prisma-fmt
+          args: --target armv7-unknown-linux-gnueabihf --release
 
       - uses: ncipollo/release-action@v1
         with:
