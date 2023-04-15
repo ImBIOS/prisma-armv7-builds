@@ -16,7 +16,7 @@ This mostly follows this documentation piece, please read this once: <https://ww
     PRISMA_MIGRATION_ENGINE_BINARY=/path/to/migration-engine
     PRISMA_INTROSPECTION_ENGINE_BINARY=/path/to/introspection-engine
     PRISMA_FMT_BINARY=/path/to/prisma-fmt
-    PRISMA_QUERY_ENGINE_LIBRARY=/path/to/libquery_engine_napi.so
+    PRISMA_QUERY_ENGINE_LIBRARY=/path/to/libquery_engine_napi.so.node
     ```
 
 5. You are now ready to use Prisma on your armv7.
