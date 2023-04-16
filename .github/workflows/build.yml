@@ -34,15 +34,15 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Setup cross with custom image
-        run: |-
-          cat <<EOF > Cross.toml
-            [target.armv7-unknown-linux-gnueabihf]
-            image = "pantharshit00/prisma-armv7-build-image:latest"
-          EOF
+      # - name: Setup cross with custom image
+      #   run: |-
+      #     cat <<EOF > Cross.toml
+      #       [target.armv7-unknown-linux-gnueabihf]
+      #       image = "pantharshit00/prisma-armv7-build-image:latest"
+      #     EOF
 
-      - name: List files for verification
-        run: ls -al && cat Cross.toml
+      # - name: List files for verification
+      #   run: ls -al && cat Cross.toml
 
       - uses: actions-rs/cargo@v1
         with:
