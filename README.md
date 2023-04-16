@@ -6,10 +6,10 @@ This repository contains precompiled [prisma-engines](https://github.com/prisma/
 
 ### Docker
 
-You can use the provided Dockerfile to build an image to build the engines in the GitHub Actions CI environment. GitHub Actions uses linux/amd64 as the default platform, so we need to build the engines in this environment or just use the provided docker image imbios/prisma-armv7-build-image:latest.
+You can use the provided Dockerfile to build an image to build the engines in the GitHub Actions CI environment. Our target platform was linux/arm/v7, so we need to build the engines in this environment or just use the provided docker image imbios/prisma-armv7-build-image:latest.
 
 ```sh
-docker build . -t prisma-armv7-build-image --platform linux/amd64
+docker build . -t prisma-armv7-build-image --platform linux/arm/v7
 docker run -it prisma-armv7-build-image
 ```
 
