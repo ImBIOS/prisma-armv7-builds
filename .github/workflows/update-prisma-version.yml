@@ -32,5 +32,4 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: build armv7
-          token: ${{ secrets.GITHUB_TOKEN }}
           inputs: '{ "tag": "${{ steps.check_update.outputs.new_prisma_version }}" }'
