@@ -34,15 +34,18 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      # - name: Setup cross with custom image
-      #   run: |-
-      #     cat <<EOF > Cross.toml
-      #       [target.armv7-unknown-linux-gnueabihf]
-      #       image = "pantharshit00/prisma-armv7-build-image:latest"
-      #     EOF
+      - name: Setup cross with OpenSSL
+        run: |-
+          cat <<EOF > Cross.toml
+            [target.armv7-unknown-linux-gnueabihf]
+            pre-build = [
+              "dpkg --add-architecture $CROSS_DEB_ARCH",
+              "apt-get update && apt-get install --assume-yes libssl-dev:$CROSS_DEB_ARCH"
+            ]
+          EOF
 
-      # - name: List files for verification
-      #   run: ls -al && cat Cross.toml
+      - name: List files for verification
+        run: ls -al && cat Cross.toml
 
       - uses: actions-rs/cargo@v1
         with:
